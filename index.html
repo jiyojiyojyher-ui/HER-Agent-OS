@@ -7,52 +7,139 @@
 <title>HER Agent OS</title>
 
 <style>
-
 body{
     background:#0f172a;
     color:white;
     font-family:Arial,sans-serif;
-    text-align:center;
-    padding:50px;
+    padding:40px;
+}
+
+.container{
+    max-width:900px;
+    margin:0 auto;
 }
 
 h1{
     font-size:48px;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#94a3b8;
+    margin-bottom:30px;
+}
+
+.status-box{
+    background:#1e293b;
+    padding:20px;
+    border-radius:16px;
+    margin-bottom:30px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:20px;
 }
 
 .card{
     background:#1e293b;
-    width:400px;
-    margin:20px auto;
-    padding:20px;
-    border-radius:12px;
+    padding:25px;
+    border-radius:16px;
 }
 
-</style>
+.card h2{
+    font-size:22px;
+    margin-bottom:15px;
+}
 
+.card p{
+    color:#cbd5e1;
+    font-size:16px;
+}
+
+.badge{
+    display:inline-block;
+    margin-top:10px;
+    padding:8px 12px;
+    background:#334155;
+    border-radius:20px;
+    font-size:14px;
+}
+
+.footer{
+    margin-top:40px;
+    color:#94a3b8;
+    text-align:center;
+}
+</style>
 </head>
 
 <body>
 
-<h1>HER Agent OS</h1>
+<div class="container">
 
-<div class="card">
-🏠 부동산 투자 비서
+    <h1>HER Agent OS</h1>
+    <p class="subtitle">개인 AI 비서 대시보드</p>
+
+    <div class="status-box">
+        <h2>오늘의 상태</h2>
+        <p id="today"></p>
+        <p id="clock"></p>
+    </div>
+
+    <div class="grid">
+
+        <div class="card">
+            <h2>🏠 부동산 투자 비서</h2>
+            <p>네이버 부동산 시세 수집 준비 중</p>
+            <span class="badge">상태: 설계 단계</span>
+        </div>
+
+        <div class="card">
+            <h2>📈 시장 분석 비서</h2>
+            <p>주식·코인 브리핑 기능 준비 중</p>
+            <span class="badge">상태: 데이터 연결 전</span>
+        </div>
+
+        <div class="card">
+            <h2>📚 공인중개사 학습 비서</h2>
+            <p>오늘의 문제 출제 기능 준비 중</p>
+            <span class="badge">상태: 콘텐츠 설계 중</span>
+        </div>
+
+        <div class="card">
+            <h2>🤖 개인 비서</h2>
+            <p>일정·메일·알림 연동 준비 중</p>
+            <span class="badge">상태: 자동화 연결 전</span>
+        </div>
+
+    </div>
+
+    <p class="footer">현재 상태 : Day 4 개발중</p>
+
 </div>
 
-<div class="card">
-📈 시장 분석 비서
-</div>
+<script>
+function updateTime(){
+    const now = new Date();
 
-<div class="card">
-📚 공인중개사 학습 비서
-</div>
+    const dateText = now.toLocaleDateString("ko-KR", {
+        year:"numeric",
+        month:"long",
+        day:"numeric",
+        weekday:"long"
+    });
 
-<div class="card">
-🤖 개인 비서
-</div>
+    const timeText = now.toLocaleTimeString("ko-KR");
 
-<p>현재 상태 : 개발중</p>
+    document.getElementById("today").innerText = "날짜: " + dateText;
+    document.getElementById("clock").innerText = "현재 시간: " + timeText;
+}
+
+updateTime();
+setInterval(updateTime, 1000);
+</script>
 
 </body>
 </html>
