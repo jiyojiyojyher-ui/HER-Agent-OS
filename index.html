@@ -19,7 +19,7 @@ h1{font-size:48px;margin-bottom:10px}
 .badge{display:inline-block;margin-top:10px;padding:8px 12px;background:#334155;border-radius:20px;font-size:14px}
 input{width:75%;padding:14px;border-radius:10px;border:none;font-size:16px}
 button{padding:14px 20px;border:none;border-radius:10px;background:#38bdf8;color:#0f172a;font-weight:bold;cursor:pointer}
-#ai-answer{margin-top:20px;color:#cbd5e1;line-height:1.7}
+#ai-answer{margin-top:20px;color:#cbd5e1;line-height:1.7;white-space:pre-line}
 .footer{margin-top:40px;color:#94a3b8;text-align:center}
 </style>
 </head>
@@ -37,6 +37,7 @@ button{padding:14px 20px;border:none;border-radius:10px;background:#38bdf8;color
 </div>
 
 <div class="grid">
+
 <div class="card" onclick="showAssistant('realestate')">
 <h2>🏠 부동산 투자 비서</h2>
 <p>네이버 부동산 시세 수집 준비 중</p>
@@ -60,6 +61,7 @@ button{padding:14px 20px;border:none;border-radius:10px;background:#38bdf8;color
 <p>일정·메일·알림 연동 준비 중</p>
 <span class="badge">상태: 자동화 연결 전</span>
 </div>
+
 </div>
 
 <div class="status-box">
@@ -74,69 +76,110 @@ button{padding:14px 20px;border:none;border-radius:10px;background:#38bdf8;color
 <p id="ai-answer">아직 질문이 없습니다.</p>
 </div>
 
-<p class="footer">현재 상태 : Day 7 개발중</p>
+<p class="footer">현재 상태 : Day 8 개발중</p>
 
 </div>
 
 <script>
 function updateTime(){
-const now=new Date();
-document.getElementById("today").innerText="날짜: "+now.toLocaleDateString("ko-KR",{year:"numeric",month:"long",day:"numeric",weekday:"long"});
-document.getElementById("clock").innerText="현재 시간: "+now.toLocaleTimeString("ko-KR");
+    const now=new Date();
+
+    document.getElementById("today").innerText=
+        "날짜: "+now.toLocaleDateString("ko-KR",{
+            year:"numeric",
+            month:"long",
+            day:"numeric",
+            weekday:"long"
+        });
+
+    document.getElementById("clock").innerText=
+        "현재 시간: "+now.toLocaleTimeString("ko-KR");
 }
 
 async function loadCryptoPrice(){
-const url="https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd,krw";
-try{
-const response=await fetch(url);
-const data=await response.json();
-document.getElementById("market-data").innerHTML=`
+    const url="https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd,krw";
+
+    try{
+        const response=await fetch(url);
+        const data=await response.json();
+
+        document.getElementById("market-data").innerHTML=`
 <strong>Bitcoin</strong><br>
 $${data.bitcoin.usd.toLocaleString()} / ₩${data.bitcoin.krw.toLocaleString()}<br><br>
 <strong>Ethereum</strong><br>
 $${data.ethereum.usd.toLocaleString()} / ₩${data.ethereum.krw.toLocaleString()}
-`;
-}catch(error){
-document.getElementById("market-data").innerText="시장 데이터를 불러오지 못했습니다.";
-}
+        `;
+    }catch(error){
+        document.getElementById("market-data").innerText=
+            "시장 데이터를 불러오지 못했습니다.";
+    }
 }
 
 function showAssistant(type){
-const title=document.getElementById("assistant-title");
-const detail=document.getElementById("assistant-detail");
+    const title=document.getElementById("assistant-title");
+    const detail=document.getElementById("assistant-detail");
 
-if(type==="realestate"){
-title.innerText="🏠 부동산 투자 비서";
-detail.innerText="네이버 부동산 시세 수집, 아파트별 가격 추적, 투자 후보 비교 기능을 구축할 예정입니다.";
-}
-if(type==="market"){
-title.innerText="📈 시장 분석 비서";
-detail.innerText="비트코인, 이더리움, 주요 지수, 섹터 흐름을 매일 브리핑하는 기능을 구축합니다.";
-}
-if(type==="study"){
-title.innerText="📚 공인중개사 학습 비서";
-detail.innerText="오늘의 문제, 오답노트, 과목별 진도 관리 기능을 구축합니다.";
-}
-if(type==="personal"){
-title.innerText="🤖 개인 비서";
-detail.innerText="일정, 메일, 알림, 반복 업무 자동화를 연결할 예정입니다.";
-}
-}
+    if(type==="realestate"){
+        title.innerText="🏠 부동산 투자 비서";
+        detail.innerText="네이버 부동산 시세 수집, 아파트별 가격 추적, 투자 후보 비교 기능을 구축할 예정입니다.";
+    }
 
-function askAI(){
-const question=document.getElementById("user-question").value;
-const answer=document.getElementById("ai-answer");
+    if(type==="market"){
+        title.innerText="📈 시장 분석 비서";
+        detail.innerText="비트코인, 이더리움, 주요 지수, 섹터 흐름을 매일 브리핑하는 기능을 구축합니다.";
+    }
 
-if(question.trim()===""){
-answer.innerText="질문을 입력하세요.";
-return;
+    if(type==="study"){
+        title.innerText="📚 공인중개사 학습 비서";
+        detail.innerText="오늘의 문제, 오답노트, 과목별 진도 관리 기능을 구축합니다.";
+    }
+
+    if(type==="personal"){
+        title.innerText="🤖 개인 비서";
+        detail.innerText="일정, 메일, 알림, 반복 업무 자동화를 연결할 예정입니다.";
+    }
 }
 
-answer.innerText="질문을 확인했습니다: '" + question + "'\n\n현재는 테스트 답변입니다. 다음 단계에서 실제 GPT 또는 Claude API를 연결합니다.";
+async function askAI(){
+    const question=document.getElementById("user-question").value;
+    const answer=document.getElementById("ai-answer");
+
+    if(question.trim()===""){
+        answer.innerText="질문을 입력하세요.";
+        return;
+    }
+
+    answer.innerText="AI가 답변을 생성하는 중입니다...";
+
+    try{
+        const response=await fetch("/api/chat",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                question:question
+            })
+        });
+
+        const data=await response.json();
+
+        if(data.answer){
+            answer.innerText=data.answer;
+        }else if(data.error){
+            answer.innerText="오류: "+data.error;
+        }else{
+            answer.innerText="AI 답변을 불러오지 못했습니다.";
+        }
+
+    }catch(error){
+        answer.innerText="서버 연결 중 오류가 발생했습니다.";
+    }
 }
 
 updateTime();
 setInterval(updateTime,1000);
+
 loadCryptoPrice();
 setInterval(loadCryptoPrice,60000);
 </script>
