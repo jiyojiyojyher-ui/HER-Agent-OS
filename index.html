@@ -98,7 +98,7 @@ h1{
 
         <div class="card">
             <h2>📈 시장 분석 비서</h2>
-            <p>주식·코인 브리핑 기능 준비 중</p>
+            <p id="market-data">시장 데이터를 불러오는 중...</p>
             <span class="badge">상태: 데이터 연결 전</span>
         </div>
 
@@ -137,8 +137,34 @@ function updateTime(){
     document.getElementById("clock").innerText = "현재 시간: " + timeText;
 }
 
+async function loadCryptoPrice(){
+    const url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd,krw&include_24hr_change=true";
+
+    try{
+        const response = await fetch(url);
+        const data = await response.json();
+
+        const btcUsd = data.bitcoin.usd.toLocaleString();
+        const btcKrw = data.bitcoin.krw.toLocaleString();
+        const ethUsd = data.ethereum.usd.toLocaleString();
+        const ethKrw = data.ethereum.krw.toLocaleString();
+
+        document.getElementById("market-data").innerHTML = `
+            <strong>Bitcoin</strong><br>
+            $${btcUsd} / ₩${btcKrw}<br><br>
+            <strong>Ethereum</strong><br>
+            $${ethUsd} / ₩${ethKrw}
+        `;
+    }catch(error){
+        document.getElementById("market-data").innerText = "시장 데이터를 불러오지 못했습니다.";
+    }
+}
+
 updateTime();
 setInterval(updateTime, 1000);
+
+loadCryptoPrice();
+setInterval(loadCryptoPrice, 60000);
 </script>
 
 </body>
