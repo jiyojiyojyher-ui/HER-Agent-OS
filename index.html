@@ -28,7 +28,7 @@ button{padding:14px 20px;border:none;border-radius:10px;background:#38bdf8;color
 <div class="container">
 
 <h1>HER Agent OS</h1>
-<p class="subtitle">개인 AI 비서 대시보드</p>
+<p class="subtitle">무료 API 기반 개인 AI 비서 대시보드</p>
 
 <div class="status-box">
 <h2>오늘의 상태</h2>
@@ -47,19 +47,19 @@ button{padding:14px 20px;border:none;border-radius:10px;background:#38bdf8;color
 <div class="card" onclick="showAssistant('market')">
 <h2>📈 시장 분석 비서</h2>
 <p id="market-data">시장 데이터를 불러오는 중...</p>
-<span class="badge">상태: 코인 데이터 연결 중</span>
+<span class="badge">상태: 무료 코인 API 연결 중</span>
 </div>
 
 <div class="card" onclick="showAssistant('study')">
 <h2>📚 공인중개사 학습 비서</h2>
 <p>오늘의 문제, 정답 확인, 점수 기록 기능을 준비 중입니다.</p>
-<span class="badge">상태: 로컬 학습 기능 준비 중</span>
+<span class="badge">상태: 학습 기능 준비 중</span>
 </div>
 
 <div class="card" onclick="showAssistant('personal')">
 <h2>🤖 개인 비서</h2>
-<p>할 일 목록, 메모 저장, 일정 체크 기능을 준비 중입니다.</p>
-<span class="badge">상태: 로컬 생산성 기능 준비 중</span>
+<p>Gemini 무료 API 기반 답변 기능을 연결합니다.</p>
+<span class="badge">상태: Gemini 연결</span>
 </div>
 
 </div>
@@ -70,13 +70,13 @@ button{padding:14px 20px;border:none;border-radius:10px;background:#38bdf8;color
 </div>
 
 <div class="chat-box">
-<h2>로컬 메모형 비서</h2>
-<input id="user-question" type="text" placeholder="예: 오늘 할 일 정리하기">
-<button onclick="askAI()">입력</button>
-<p id="ai-answer">아직 입력된 내용이 없습니다.</p>
+<h2>Gemini AI 비서</h2>
+<input id="user-question" type="text" placeholder="예: 광교 아파트 투자 체크리스트 만들어줘">
+<button onclick="askAI()">질문</button>
+<p id="ai-answer">아직 질문이 없습니다.</p>
 </div>
 
-<p class="footer">현재 상태 : API 없는 로컬 버전</p>
+<p class="footer">현재 상태 : Gemini 무료 API 연결 버전</p>
 
 </div>
 
@@ -121,38 +121,60 @@ function showAssistant(type){
 
     if(type==="realestate"){
         title.innerText="🏠 부동산 투자 비서";
-        detail.innerText="API 없이 관심 단지, 매수가, 현재가, 전세가, 수익률을 직접 입력하고 비교하는 기능을 구축합니다.";
+        detail.innerText="관심 단지, 매수가, 현재가, 전세가, 수익률을 직접 입력하고 비교하는 기능을 구축합니다.";
     }
 
     if(type==="market"){
         title.innerText="📈 시장 분석 비서";
-        detail.innerText="현재는 코인 가격 표시와 투자 메모 기능 중심으로 운영합니다. 복잡한 AI 분석은 이후 단계에서 확장합니다.";
+        detail.innerText="CoinGecko 무료 API로 BTC/ETH 가격을 표시하고, Gemini로 시장 메모를 정리할 수 있게 합니다.";
     }
 
     if(type==="study"){
         title.innerText="📚 공인중개사 학습 비서";
-        detail.innerText="기출 OX, 객관식 문제, 정답 확인, 오답 기록 기능을 API 없이 로컬에서 구현합니다.";
+        detail.innerText="기출 OX, 객관식 문제, 정답 확인, 오답 기록 기능을 로컬 데이터와 Gemini로 확장합니다.";
     }
 
     if(type==="personal"){
         title.innerText="🤖 개인 비서";
-        detail.innerText="오늘 할 일, 메모, 체크리스트를 브라우저에 저장하는 로컬 개인 비서 기능을 만듭니다.";
+        detail.innerText="Gemini 무료 API를 이용해 질문 답변, 메모 정리, 체크리스트 생성을 지원합니다.";
     }
 }
 
-function askAI(){
+async function askAI(){
     const question=document.getElementById("user-question").value;
     const answer=document.getElementById("ai-answer");
 
     if(question.trim()===""){
-        answer.innerText="내용을 입력하세요.";
+        answer.innerText="질문을 입력하세요.";
         return;
     }
 
-    answer.innerText=
-        "입력 내용이 기록되었습니다:\n\n" +
-        question +
-        "\n\n현재 버전은 API 없는 로컬 테스트 버전입니다. 다음 단계에서 할 일 저장, 학습 문제, 투자 메모 기능으로 확장합니다.";
+    answer.innerText="Gemini가 답변을 생성하는 중입니다...";
+
+    try{
+        const response=await fetch("/api/chat",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                question:question
+            })
+        });
+
+        const data=await response.json();
+
+        if(data.answer){
+            answer.innerText=data.answer;
+        }else if(data.error){
+            answer.innerText="오류: "+data.error;
+        }else{
+            answer.innerText="답변을 불러오지 못했습니다.";
+        }
+
+    }catch(error){
+        answer.innerText="서버 연결 중 오류가 발생했습니다.";
+    }
 }
 
 updateTime();
